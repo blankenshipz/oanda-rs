@@ -7,3 +7,5 @@ services:
       dockerfile: Dockerfile
     volumes:
       - .:/usr/src/app
+    env_file: .secrets
+
