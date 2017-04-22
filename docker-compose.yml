@@ -7,5 +7,9 @@ services:
       dockerfile: Dockerfile
     volumes:
       - .:/usr/src/app
+      - registry:/root/.cargo/registry
     env_file: .secrets
 
+volumes:
+  registry:
+    driver: local
