@@ -6,7 +6,7 @@ ENV RUST_TARGET=x86_64-unknown-linux-gnu
 RUN \
   apt-get update && \
   DEBIAN_FRONTEND=noninteractive \
-  apt-get install -y ca-certificates curl build-essential gcc libssl-dev && \
+  apt-get install -y ca-certificates curl build-essential gcc libssl-dev openssl pkg-config && \
   curl \
     -sO \
     https://static.rust-lang.org/dist/rust-$RUST_VERSION-$RUST_TARGET.tar.gz \
