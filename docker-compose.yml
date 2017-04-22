@@ -5,6 +5,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    command: cargo test -- --nocapture
     volumes:
       - .:/usr/src/app
       - registry:/root/.cargo/registry
