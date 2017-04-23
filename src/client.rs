@@ -7,23 +7,16 @@ use hyper_native_tls::NativeTlsClient;
 
 use serde_json;
 
+use account::details::*;
+use account::*;
+
 header! { (Authorization, "Authorization") => [String] }
+header! { (AcceptDatetimeFormat, "AcceptDatetimeFormat") => [String] }
 
 pub struct Client<'a> {
     url: &'a str,
     api_key: &'a str,
     web_client: WebClient,
-}
-
-#[derive(Serialize, Deserialize)]
-pub struct AccountInfo {
-    pub id: String,
-    pub tags: Vec<String>
-}
-
-#[derive(Serialize, Deserialize)]
-pub struct Accounts {
-    accounts: Vec<AccountInfo>
 }
 
 impl<'a> Client<'a> {
@@ -40,28 +33,45 @@ impl<'a> Client<'a> {
     }
 
     // Get Account list for current auth token
-    pub fn accounts(&self) -> Vec<AccountInfo> {
+    pub fn accounts(&self) -> Vec<Account> {
         let input = self.get("accounts");
-        let result: Accounts = serde_json::from_str(&input).unwrap();
+        let mut result: Accounts = serde_json::from_str(&input).unwrap();
+
+        for x in result.accounts.iter_mut() {
+            x.client = Some(&self);
+        }
 
         result.accounts
     }
 
+    pub fn account_details(&self, account: &Account) -> Details {
+        let input = self.get(format!("accounts/{}", account.id).as_str());
+        let mut result: AccountDetails = serde_json::from_str(&input).unwrap();
+
+        result.account
+    }
+
     fn get(&self, params: &str) -> String {
         let mut res = String::new();
-        let mut headers = Headers::new();
-
-        headers.set(Authorization(format!("Bearer {}", self.api_key)));
 
         self.web_client
             .get(&format!("{}/{}", self.url, params))
-            .headers(headers)
+            .headers(self.headers())
             .send()
             .unwrap()
             .read_to_string(&mut res)
             .unwrap();
 
         res
+    }
+
+    fn headers(&self) -> Headers {
+        let mut headers = Headers::new();
+
+        headers.set(Authorization(format!("Bearer {}", self.api_key)));
+        headers.set(AcceptDatetimeFormat("RFC3339".to_string()));
+
+        headers
     }
 }
 
