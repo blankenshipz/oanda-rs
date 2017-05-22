@@ -7,8 +7,9 @@ use hyper_native_tls::NativeTlsClient;
 
 use serde_json;
 
-use account::details::*;
 use account::*;
+use account::details::*;
+use account::summary::*;
 
 header! { (Authorization, "Authorization") => [String] }
 header! { (AcceptDatetimeFormat, "AcceptDatetimeFormat") => [String] }
@@ -44,14 +45,7 @@ impl<'a> Client<'a> {
         result.accounts
     }
 
-    pub fn account_details(&self, account: &Account) -> Details {
-        let input = self.get(format!("accounts/{}", account.id).as_str());
-        let mut result: AccountDetails = serde_json::from_str(&input).unwrap();
-
-        result.account
-    }
-
-    fn get(&self, params: &str) -> String {
+    pub fn get(&self, params: &str) -> String {
         let mut res = String::new();
 
         self.web_client

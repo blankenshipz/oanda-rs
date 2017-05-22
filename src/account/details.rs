@@ -215,5 +215,5 @@ pub struct AccountDetails {
     // The full details of the requested Account.
     pub account: Details,
     // The ID of the most recent Transaction created for the Account.
-    lastTransactionID: String
+    pub lastTransactionID: String
 }
