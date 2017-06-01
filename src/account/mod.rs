@@ -106,8 +106,10 @@ mod tests {
 
         let account = accounts.first().unwrap().clone();
         let instruments = account.instruments();
-        // DKK just hapepns to the be the first one, the result here is a list
-        // of all USD_* tradable currencies because the test account is USD
-        assert_eq!(instruments.first().unwrap().name, "USD_DKK")
+        // the result here is a list of all USD_* tradable currencies because
+        // the test account is USD, just make sure we find one we "expect"
+        assert_eq!(
+            instruments.into_iter().any(|x| x.name == "USD_DKK"), true
+        )
     }
 }
