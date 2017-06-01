@@ -25,7 +25,7 @@ pub struct Summary {
     // The total realized profit/loss for the Account since it was last reset by
     // the client. Represented in the Account’s home currency.
     #[serde(rename = "resettablePL")]
-    pub resettable_pL: f32,
+    pub resettable_pl: f32,
     // The date/time that the Account’s resettablePL was last reset.
     #[serde(rename = "resettabledPLTimelast")]
     pub resettabled_pl_time: Option<DateTime<UTC>>,
