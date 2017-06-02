@@ -9,7 +9,8 @@ extern crate serde_json;
 #[macro_use]
 extern crate serde_derive;
 
-mod client;
 mod account;
+mod client;
+mod instrument;
 
 pub use client::Client;
