@@ -1,4 +1,10 @@
+extern crate ratelimit;
+
 use std::io::Read;
+use std::sync::mpsc;
+use std::thread;
+use std::time::Duration;
+use std::sync::mpsc::SyncSender;
 
 use hyper::Client as WebClient;
 use hyper::header::Headers;
@@ -18,6 +24,7 @@ pub struct Client<'a> {
     url: &'a str,
     api_key: &'a str,
     web_client: WebClient,
+    sender: SyncSender<()>
 }
 
 impl<'a> Client<'a> {
@@ -26,11 +33,30 @@ impl<'a> Client<'a> {
         let connector = HttpsConnector::new(ssl);
         let web_client = WebClient::with_connector(connector);
 
-        Client {
+        // Client is allowed to have no more than 120 requests per second on average,
+        // with bursts of no more than 60 requests. Excess requests will be
+        // rejected. This restriction is applied for each access token,
+        // not for each individual connection.
+        let mut ratelimit = ratelimit::Ratelimit::configure()
+            .capacity(60) //number of tokens the bucket will hold
+            .quantum(1)   //add one token per interval
+            .interval(Duration::from_millis(9)) // TODO: allows for 111 per second 8.3 would be 120 (Quantum per 9 milliseconds)
+            .build();
+
+        let client = Client {
             url: url,
             api_key: api_key,
-            web_client: web_client
-        }
+            web_client: web_client,
+            sender: ratelimit.clone_sender()
+        };
+
+        thread::spawn(move || {
+            loop {
+                ratelimit.run();
+            }
+        });
+
+        client
     }
 
     // Get Account list for current auth token
@@ -46,6 +72,8 @@ impl<'a> Client<'a> {
     }
 
     pub fn get(&self, params: &str) -> String {
+        self.sender.send(());
+
         let mut res = String::new();
 
         self.web_client
