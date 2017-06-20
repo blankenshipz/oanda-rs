@@ -3,7 +3,9 @@ use std::fmt;
 use chrono::datetime::DateTime;
 use chrono::UTC;
 
-pub struct InstrumentQuery {
+pub use client::Client;
+
+pub struct PricingQuery<'a> {
     // Name of the Instrument [required]
     instrument: String,
     // The Price component(s) to get candlestick data for. Can contain any
@@ -41,10 +43,12 @@ pub struct InstrumentQuery {
     alignment_timezone: Option<String>,
     // The day of the week used for granularities that have weekly alignment.
     // [default=Friday]
-    weekly_alignment: Option<String>
+    weekly_alignment: Option<String>,
+    // the client
+    client: &'a Client<'a>
 }
 
-impl fmt::Display for InstrumentQuery {
+impl <'a>fmt::Display for PricingQuery<'a> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let mut result = format!("{}/candles", self.instrument);
         let add_result = |s: &str, display: &str, mem: &mut String| {
@@ -68,9 +72,9 @@ impl fmt::Display for InstrumentQuery {
     }
 }
 
-impl InstrumentQuery {
-  pub fn new(instrument: String, from: DateTime<UTC>) -> InstrumentQuery {
-      InstrumentQuery {
+impl <'a>PricingQuery<'a> {
+  pub fn new(client: &'a Client, instrument: String, from: DateTime<UTC>) -> PricingQuery<'a> {
+      PricingQuery {
           instrument: instrument,
           price: None,
           granularity: None,
@@ -81,51 +85,52 @@ impl InstrumentQuery {
           include_first: None,
           daily_alignment: None,
           alignment_timezone: None,
-          weekly_alignment: None
+          weekly_alignment: None,
+          client: client
       }
   }
 
-  pub fn with_price(&mut self, price: String) -> &mut InstrumentQuery {
+  pub fn with_price(&mut self, price: String) -> &mut PricingQuery<'a> {
       self.price = Some(price);
       self
   }
 
-  pub fn with_granularity(&mut self, granularity: String) -> &mut InstrumentQuery {
+  pub fn with_granularity(&mut self, granularity: String) -> &mut PricingQuery<'a> {
       self.granularity = Some(granularity);
       self
   }
 
-  pub fn with_count(&mut self, count: i32) -> &mut InstrumentQuery {
+  pub fn with_count(&mut self, count: i32) -> &mut PricingQuery<'a> {
       self.count = Some(count);
       self
   }
 
-  pub fn with_to(&mut self, to: DateTime<UTC>) -> &mut InstrumentQuery {
+  pub fn with_to(&mut self, to: DateTime<UTC>) -> &mut PricingQuery<'a> {
       self.to = Some(to);
       self
   }
 
-  pub fn with_smooth(&mut self, smooth: bool) -> &mut InstrumentQuery {
+  pub fn with_smooth(&mut self, smooth: bool) -> &mut PricingQuery<'a> {
       self.smooth = Some(smooth);
       self
   }
 
-  pub fn with_include_first(&mut self, include_first: bool) -> &mut InstrumentQuery {
+  pub fn with_include_first(&mut self, include_first: bool) -> &mut PricingQuery<'a> {
       self.include_first = Some(include_first);
       self
   }
 
-  pub fn with_daily_alignment(&mut self, daily_alignment: i32) -> &mut InstrumentQuery {
+  pub fn with_daily_alignment(&mut self, daily_alignment: i32) -> &mut PricingQuery<'a> {
       self.daily_alignment = Some(daily_alignment);
       self
   }
 
-  pub fn with_alignment_timezone(&mut self, alignment_timezone: String) -> &mut InstrumentQuery {
+  pub fn with_alignment_timezone(&mut self, alignment_timezone: String) -> &mut PricingQuery<'a> {
       self.alignment_timezone = Some(alignment_timezone);
       self
   }
 
-  pub fn with_weekly_alignment(&mut self, weekly_alignment: String) -> &mut InstrumentQuery {
+  pub fn with_weekly_alignment(&mut self, weekly_alignment: String) -> &mut PricingQuery<'a> {
       self.weekly_alignment = Some(weekly_alignment);
       self
   }
@@ -134,12 +139,12 @@ impl InstrumentQuery {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::env;
 
     #[test]
     fn it_can_write_a_query() {
         let utc: DateTime<UTC> = UTC::now();
-        let mut iq = InstrumentQuery::new("EUR_USD".to_string(), utc);
+        let client = Client::new("","");
+        let mut iq = PricingQuery::new(&client, "EUR_USD".to_string(), utc);
         let query  = iq.with_price("M".to_string());
 
         assert_eq!(
