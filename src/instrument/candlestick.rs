@@ -10,13 +10,13 @@ pub struct Candlestick {
     time: DateTime<UTC>,
     // The candlestick data based on bids. Only provided if bid-based candles
     // were requested.
-    bid: CandlestickData,
+    bid: Option<CandlestickData>,
     // The candlestick data based on asks. Only provided if ask-based candles
     // were requested.
-    ask: CandlestickData,
+    ask: Option<CandlestickData>,
     // The candlestick data based on midpoints. Only provided if midpoint-based
     // candles were requested.
-    mid: CandlestickData,
+    mid: Option<CandlestickData>,
     // The number of prices created during the time-range represented by the
     // candlestick.
     volume: i32,

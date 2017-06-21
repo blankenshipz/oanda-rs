@@ -1,9 +1,12 @@
 use std::fmt;
 
+use serde_json;
+
 use chrono::datetime::DateTime;
 use chrono::UTC;
 
-pub use client::Client;
+use client::Client;
+use super::pricing::Pricing;
 
 pub struct PricingQuery<'a> {
     // Name of the Instrument [required]
@@ -56,7 +59,7 @@ impl <'a>fmt::Display for PricingQuery<'a> {
         };
 
         // we should always have from
-        add_result(&self.from.to_rfc3339(), "from", &mut result);
+        result.push_str(&format!("?from={}", self.from.to_rfc3339()));
         // we may or may not have these 'optional' attributes
         if let Some(ref price) = self.price { add_result(price, "price", &mut result) }
         if let Some(ref granularity) = self.granularity { add_result(granularity, "granularity", &mut result) }
@@ -73,83 +76,97 @@ impl <'a>fmt::Display for PricingQuery<'a> {
 }
 
 impl <'a>PricingQuery<'a> {
-  pub fn new(client: &'a Client, instrument: String, from: DateTime<UTC>) -> PricingQuery<'a> {
-      PricingQuery {
-          instrument: instrument,
-          price: None,
-          granularity: None,
-          count: None,
-          from: from,
-          to: None,
-          smooth: None,
-          include_first: None,
-          daily_alignment: None,
-          alignment_timezone: None,
-          weekly_alignment: None,
-          client: client
-      }
-  }
+    pub fn new(client: &'a Client, instrument: String, from: DateTime<UTC>) -> PricingQuery<'a> {
+        PricingQuery {
+            instrument: instrument,
+            price: None,
+            granularity: None,
+            count: None,
+            from: from,
+            to: None,
+            smooth: None,
+            include_first: None,
+            daily_alignment: None,
+            alignment_timezone: None,
+            weekly_alignment: None,
+            client: client
+        }
+    }
+    pub fn with_price(&mut self, price: String) -> &mut PricingQuery<'a> {
+        self.price = Some(price);
+        self
+    }
 
-  pub fn with_price(&mut self, price: String) -> &mut PricingQuery<'a> {
-      self.price = Some(price);
-      self
-  }
+    pub fn with_granularity(&mut self, granularity: String) -> &mut PricingQuery<'a> {
+        self.granularity = Some(granularity);
+        self
+    }
 
-  pub fn with_granularity(&mut self, granularity: String) -> &mut PricingQuery<'a> {
-      self.granularity = Some(granularity);
-      self
-  }
+    pub fn with_count(&mut self, count: i32) -> &mut PricingQuery<'a> {
+        self.count = Some(count);
+        self
+    }
 
-  pub fn with_count(&mut self, count: i32) -> &mut PricingQuery<'a> {
-      self.count = Some(count);
-      self
-  }
+    pub fn with_to(&mut self, to: DateTime<UTC>) -> &mut PricingQuery<'a> {
+        self.to = Some(to);
+        self
+    }
 
-  pub fn with_to(&mut self, to: DateTime<UTC>) -> &mut PricingQuery<'a> {
-      self.to = Some(to);
-      self
-  }
+    pub fn with_smooth(&mut self, smooth: bool) -> &mut PricingQuery<'a> {
+        self.smooth = Some(smooth);
+        self
+    }
 
-  pub fn with_smooth(&mut self, smooth: bool) -> &mut PricingQuery<'a> {
-      self.smooth = Some(smooth);
-      self
-  }
+    pub fn with_include_first(&mut self, include_first: bool) -> &mut PricingQuery<'a> {
+        self.include_first = Some(include_first);
+        self
+    }
 
-  pub fn with_include_first(&mut self, include_first: bool) -> &mut PricingQuery<'a> {
-      self.include_first = Some(include_first);
-      self
-  }
+    pub fn with_daily_alignment(&mut self, daily_alignment: i32) -> &mut PricingQuery<'a> {
+        self.daily_alignment = Some(daily_alignment);
+        self
+    }
 
-  pub fn with_daily_alignment(&mut self, daily_alignment: i32) -> &mut PricingQuery<'a> {
-      self.daily_alignment = Some(daily_alignment);
-      self
-  }
+    pub fn with_alignment_timezone(&mut self, alignment_timezone: String) -> &mut PricingQuery<'a> {
+        self.alignment_timezone = Some(alignment_timezone);
+        self
+    }
 
-  pub fn with_alignment_timezone(&mut self, alignment_timezone: String) -> &mut PricingQuery<'a> {
-      self.alignment_timezone = Some(alignment_timezone);
-      self
-  }
+    pub fn with_weekly_alignment(&mut self, weekly_alignment: String) -> &mut PricingQuery<'a> {
+        self.weekly_alignment = Some(weekly_alignment);
+        self
+    }
 
-  pub fn with_weekly_alignment(&mut self, weekly_alignment: String) -> &mut PricingQuery<'a> {
-      self.weekly_alignment = Some(weekly_alignment);
-      self
-  }
+    pub fn execute(&self) -> Pricing {
+        let input = self.client.get(&format!("instruments/{}", self.to_string()));
+        let result: Pricing = serde_json::from_str(&input).unwrap();
+
+        result
+    }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::env;
+    use chrono::prelude::*;
+    use chrono::offset::LocalResult;
 
     #[test]
-    fn it_can_write_a_query() {
-        let utc: DateTime<UTC> = UTC::now();
-        let client = Client::new("","");
+    fn it_can_perform_a_query() {
+        let utc: DateTime<UTC> = UTC.ymd(2017, 6, 21).and_hms(12, 0, 0);
+        let url = env::var("OANDA_API_URL").unwrap();
+        let key = env::var("OANDA_API_KEY").unwrap();
+        let account_id = env::var("OANDA_TEST_ACCOUNT_ID").unwrap();
+        let client = Client::new(&url, &key);
         let mut iq = PricingQuery::new(&client, "EUR_USD".to_string(), utc);
         let query  = iq.with_price("M".to_string());
 
         assert_eq!(
             query.to_string(),
-            format!("EUR_USD/candles&from={}&price=M", utc.to_rfc3339())
-        )
+            format!("EUR_USD/candles?from={}&price=M", utc.to_rfc3339())
+        );
+
+        assert_eq!(query.execute().instrument, "EUR_USD")
     }
 }

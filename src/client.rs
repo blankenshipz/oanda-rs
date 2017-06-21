@@ -6,6 +6,9 @@ use std::thread;
 use std::time::Duration;
 use std::sync::mpsc::SyncSender;
 
+use chrono::datetime::DateTime;
+use chrono::UTC;
+
 use hyper::Client as WebClient;
 use hyper::header::Headers;
 use hyper::net::HttpsConnector;
@@ -17,8 +20,11 @@ use account::*;
 use account::details::*;
 use account::summary::*;
 
+use instrument::pricing_query::PricingQuery;
+
 header! { (Authorization, "Authorization") => [String] }
 header! { (AcceptDatetimeFormat, "AcceptDatetimeFormat") => [String] }
+header! { (Connection, "Connection") => [String] }
 
 pub struct Client<'a> {
     url: &'a str,
@@ -71,6 +77,10 @@ impl<'a> Client<'a> {
         result.accounts
     }
 
+    pub fn pricing_for(&self, instrument: String, from: DateTime<UTC>) -> PricingQuery {
+        PricingQuery::new(&self, instrument, from)
+    }
+
     pub fn get(&self, params: &str) -> String {
         self.sender.send(());
 
@@ -92,6 +102,7 @@ impl<'a> Client<'a> {
 
         headers.set(Authorization(format!("Bearer {}", self.api_key)));
         headers.set(AcceptDatetimeFormat("RFC3339".to_string()));
+        headers.set(Connection("Keep-Alive".to_string()));
 
         headers
     }

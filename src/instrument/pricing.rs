@@ -2,11 +2,11 @@ use super::candlestick_granularity::CandlestickGranularity;
 use super::candlestick::Candlestick;
 
 #[derive(Deserialize)]
-pub struct pricing {
+pub struct Pricing {
     // The instrument whose Prices are represented by the candlesticks.
-    instrument: String,
+    pub instrument: String,
     // The granularity of the candlesticks provided.
-    granularity: CandlestickGranularity,
+    pub granularity: CandlestickGranularity,
     // The list of candlesticks that satisfy the request.
-    candles: Vec<Candlestick>
+    pub candles: Vec<Candlestick>
 }
