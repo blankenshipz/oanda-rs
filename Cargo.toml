@@ -1,5 +1,5 @@
 [package]
-name = "oanda-rs"
+name = "oandars"
 version = "0.1.0"
 authors = ["Zach Blankenship <zach.blankenship@gmail.com>"]
 
