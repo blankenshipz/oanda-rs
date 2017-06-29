@@ -1,7 +1,13 @@
 [package]
-name = "oandars"
-version = "0.1.0"
 authors = ["Zach Blankenship <zach.blankenship@gmail.com>"]
+description = "A wrapper for the Oanda Rest-v20 API"
+homepage = "https://github.com/blankenshipz/oanda-rs"
+keywords = ["oanda", "forex"]
+license-file = "LICENSE"
+name = "oandars"
+readme = "README.md"
+repository = "https://github.com/blankenshipz/oanda-rs"
+version = "0.1.0"
 
 [dependencies]
 chrono = { version = "0.3", features = ["serde"] }
