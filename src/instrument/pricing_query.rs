@@ -9,45 +9,45 @@ use client::Client;
 use super::pricing::Pricing;
 
 pub struct PricingQuery<'a> {
-    // Name of the Instrument [required]
+    /// Name of the Instrument [required]
     instrument: String,
-    // The Price component(s) to get candlestick data for. Can contain any
-    // combination of the characters “M” (midpoint candles) “B” (bid candles)
-    // and “A” (ask candles). [default=M]
+    /// The Price component(s) to get candlestick data for. Can contain any
+    /// combination of the characters “M” (midpoint candles) “B” (bid candles)
+    /// and “A” (ask candles). [default=M]
     price: Option<String>,
-    // The granularity of the candlesticks to fetch [default=S5]
+    /// The granularity of the candlesticks to fetch [default=S5]
     granularity: Option<String>,
-    // The number of candlesticks to return in the reponse. Count should not
-    // be specified if both the start and end parameters are provided, as the
-    // time range combined with the graularity will determine the number of
-    // candlesticks to return. [default=500, maximum=5000]
+    /// The number of candlesticks to return in the reponse. Count should not
+    /// be specified if both the start and end parameters are provided, as the
+    /// time range combined with the graularity will determine the number of
+    /// candlesticks to return. [default=500, maximum=5000]
     count: Option<i32>,
-    // The start of the time range to fetch candlesticks for.
+    /// The start of the time range to fetch candlesticks for.
     from: DateTime<UTC>,
-    // The end of the time range to fetch candlesticks for.
+    /// The end of the time range to fetch candlesticks for.
     to: Option<DateTime<UTC>>,
-    // A flag that controls whether the candlestick is “smoothed” or not.
-    // A smoothed candlestick uses the previous candle’s close price as its
-    // open price, while an unsmoothed candlestick uses the first price from
-    // its time range as its open price. [default=False]
+    /// A flag that controls whether the candlestick is “smoothed” or not.
+    /// A smoothed candlestick uses the previous candle’s close price as its
+    /// open price, while an unsmoothed candlestick uses the first price from
+    /// its time range as its open price. [default=False]
     smooth: Option<bool>,
-    // A flag that controls whether the candlestick that is covered by the from
-    // time should be included in the results. This flag enables clients to use
-    // the timestamp of the last completed candlestick received to poll for
-    // future candlesticks but avoid receiving the previous candlestick
-    // repeatedly. [default=True]
+    /// A flag that controls whether the candlestick that is covered by the from
+    /// time should be included in the results. This flag enables clients to use
+    /// the timestamp of the last completed candlestick received to poll for
+    /// future candlesticks but avoid receiving the previous candlestick
+    /// repeatedly. [default=True]
     include_first: Option<bool>,
-    // The hour of the day (in the specified timezone) to use for granularities
-    // that have daily alignments. [default=17, minimum=0, maximum=23]
+    /// The hour of the day (in the specified timezone) to use for granularities
+    /// that have daily alignments. [default=17, minimum=0, maximum=23]
     daily_alignment: Option<i32>,
-    // The timezone to use for the dailyAlignment parameter. Candlesticks with
-    // daily alignment will be aligned to the dailyAlignment hour within the
-    // alignmentTimezone. [default=America/New_York]
+    /// The timezone to use for the dailyAlignment parameter. Candlesticks with
+    /// daily alignment will be aligned to the dailyAlignment hour within the
+    /// alignmentTimezone. [default=America/New_York]
     alignment_timezone: Option<String>,
-    // The day of the week used for granularities that have weekly alignment.
-    // [default=Friday]
+    /// The day of the week used for granularities that have weekly alignment.
+    /// [default=Friday]
     weekly_alignment: Option<String>,
-    // the client
+    /// the client
     client: &'a Client<'a>
 }
 

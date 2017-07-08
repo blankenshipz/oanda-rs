@@ -3,10 +3,10 @@ use super::candlestick::Candlestick;
 
 #[derive(Deserialize)]
 pub struct Pricing {
-    // The instrument whose Prices are represented by the candlesticks.
+    /// The instrument whose Prices are represented by the candlesticks.
     pub instrument: String,
-    // The granularity of the candlesticks provided.
+    /// The granularity of the candlesticks provided.
     pub granularity: CandlestickGranularity,
-    // The list of candlesticks that satisfy the request.
+    /// The list of candlesticks that satisfy the request.
     pub candles: Vec<Candlestick>
 }

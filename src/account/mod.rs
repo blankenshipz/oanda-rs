@@ -64,7 +64,7 @@ mod tests {
     use super::*;
     use std::env;
 
-    // # TODO: Move integration tests to `tests/`
+    /// # TODO: Move integration tests to `tests/`
     #[test]
     fn it_can_read_account_details() {
         let url = env::var("OANDA_API_URL").unwrap();
@@ -106,8 +106,8 @@ mod tests {
 
         let account = accounts.first().unwrap().clone();
         let instruments = account.instruments();
-        // the result here is a list of all USD_* tradable currencies because
-        // the test account is USD, just make sure we find one we "expect"
+        /// the result here is a list of all USD_* tradable currencies because
+        /// the test account is USD, just make sure we find one we "expect"
         assert_eq!(
             instruments.into_iter().any(|x| x.name == "USD_DKK"), true
         )

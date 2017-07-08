@@ -33,19 +33,20 @@ pub struct Client<'a> {
     sender: SyncSender<()>
 }
 
+/// The Client facilitates all requests to the Oanda API
 impl<'a> Client<'a> {
     pub fn new(url: &'a str, api_key: &'a str) -> Client<'a> {
         let ssl = NativeTlsClient::new().unwrap();
         let connector = HttpsConnector::new(ssl);
         let web_client = WebClient::with_connector(connector);
 
-        // Client is allowed to have no more than 120 requests per second on average,
-        // with bursts of no more than 60 requests. Excess requests will be
-        // rejected. This restriction is applied for each access token,
-        // not for each individual connection.
+        /// Client is allowed to have no more than 120 requests per second on average,
+        /// with bursts of no more than 60 requests. Excess requests will be
+        /// rejected. This restriction is applied for each access token,
+        /// not for each individual connection.
         let mut ratelimit = ratelimit::Ratelimit::configure()
-            .capacity(60) //number of tokens the bucket will hold
-            .quantum(1)   //add one token per interval
+            .capacity(60) // number of tokens the bucket will hold
+            .quantum(1)   // add one token per interval
             .interval(Duration::from_millis(9)) // TODO: allows for 111 per second 8.3 would be 120 (Quantum per 9 milliseconds)
             .build();
 
@@ -65,7 +66,7 @@ impl<'a> Client<'a> {
         client
     }
 
-    // Get Account list for current auth token
+    /// Get Account list for current auth token
     pub fn accounts(&self) -> Vec<Account> {
         let input = self.get("accounts");
         let mut result: Accounts = serde_json::from_str(&input).unwrap();
@@ -94,6 +95,10 @@ impl<'a> Client<'a> {
             .read_to_string(&mut res)
             .unwrap();
 
+        println!("*************************");
+        println!("res: {}", res);
+        println!("*************************");
+
         res
     }
 
@@ -113,7 +118,7 @@ mod tests {
     use super::*;
     use std::env;
 
-    // # TODO: Move integration tests to `tests/`
+    /// # TODO: Move integration tests to `tests/`
     #[test]
     fn it_can_read_accounts() {
         let url = env::var("OANDA_API_URL").unwrap();
