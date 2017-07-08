@@ -1,3 +1,5 @@
+![docs.rs badge](https://docs.rs/mio/badge.svg?version=0.1.1)
+
 # OANDARS
 
 `oandars` is a Rust wrapper for the `oanda` [Rest-V20](http://developer.oanda.com/rest-live-v20/introduction/) API
@@ -8,7 +10,7 @@ This library does not yet implement all of the features of the `oanda` API, if a
 
 ## Usage
 
-See the [examples](examples/) for details.
+See the [examples](examples/) and the [documentation](https://docs.rs/oandars/0.1.1/oandars/) for details.
 
 ## Running tests in Development
 
