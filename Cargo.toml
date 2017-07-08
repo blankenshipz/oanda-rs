@@ -7,7 +7,7 @@ license-file = "LICENSE"
 name = "oandars"
 readme = "README.md"
 repository = "https://github.com/blankenshipz/oanda-rs"
-version = "0.1.1"
+version = "0.1.2"
 
 [dependencies]
 chrono = { version = "0.3", features = ["serde"] }
