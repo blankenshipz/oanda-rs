@@ -95,10 +95,6 @@ impl<'a> Client<'a> {
             .read_to_string(&mut res)
             .unwrap();
 
-        println!("*************************");
-        println!("res: {}", res);
-        println!("*************************");
-
         res
     }
 
