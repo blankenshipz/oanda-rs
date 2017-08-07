@@ -1,4 +1,4 @@
-![docs.rs badge](https://docs.rs/mio/badge.svg?version=0.1.1)
+![docs.rs badge](https://docs.rs/mio/badge.svg?version=0.1.2)
 
 # OANDARS
 
@@ -10,17 +10,24 @@ This library does not yet implement all of the features of the `oanda` API, if a
 
 ## Usage
 
-See the [examples](examples/) and the [documentation](https://docs.rs/oandars/0.1.1/oandars/) for details.
+See the [examples](examples/) and the [documentation](https://docs.rs/oandars/0.1.1/oandars/) for details
 
-## Running tests in Development
+## Development
 
-This project uses `docker` and `docker-compose` with these tools installed you can run the test suite with:
+### Setup
+
+1. Create an `Oanda` test account and name it `Testv20`
+1. Copy the `.secrets.sample` to `.secrets` and update the variables based on your new test account
+
+### Running Tests
+
+The test suite can be run with `docker-compose`:
 
 ```sh
 docker-compose run --rm lib
 ```
 
-The default command is:
+Or if you prefer to just use cargo:
 
 ```sh
 cargo test -- --nocapture
