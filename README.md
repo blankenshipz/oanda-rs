@@ -1,4 +1,4 @@
-![docs.rs badge](https://docs.rs/mio/badge.svg?version=0.1.2)
+![docs.rs badge](https://docs.rs/oandars/badge.svg?version=0.1.2)
 
 # OANDARS
 
