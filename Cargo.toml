@@ -10,10 +10,10 @@ repository = "https://github.com/blankenshipz/oanda-rs"
 version = "0.1.2"
 
 [dependencies]
-chrono = { version = "0.3", features = ["serde"] }
-hyper = "0.10.9"
-hyper-native-tls = "0.2.2"
-serde = "0.9"
-serde_derive = "0.9"
-serde_json = "0.9"
-ratelimit = "0.4.1"
+chrono = { version = "0.4.24", features = ["serde"] }
+hyper = "0.14.25"
+hyper-native-tls = "0.3.0"
+serde = "1"
+serde_derive = "1"
+serde_json = "1"
+ratelimit = "0.5.1"
