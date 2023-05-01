@@ -167,8 +167,17 @@ impl<'a> PricingQuery<'a> {
         let input = self
             .client
             .get(&format!("instruments/{}", self))
-            .await?;
-        let result: Pricing = serde_json::from_str(&input)?;
+            .await
+            .map_err(|e| {
+                eprintln!("Error executing query: {}", e);
+                e
+            })?;
+        let result: Pricing = serde_json::from_str(&input)
+            .map_err(|e| {
+                eprintln!("Error parsing response: {}", e);
+                eprintln!("Body: {input}");
+                e
+            })?;
 
         Ok(result)
     }

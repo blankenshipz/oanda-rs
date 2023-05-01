@@ -19,3 +19,7 @@ serde = "1"
 serde_derive = "1"
 serde_json = "1"
 ratelimit = "0.5.1"
+
+[features]
+default = []
+example = ["tokio/full"]
