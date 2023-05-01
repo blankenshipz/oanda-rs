@@ -71,7 +71,7 @@ impl<'a> fmt::Display for PricingQuery<'a> {
             add_result(&count.to_string(), "count", &mut result)
         }
         if let Some(ref to) = self.to {
-            add_result(&to.to_string(), "to", &mut result)
+            add_result(&to.to_rfc3339(), "to", &mut result)
         }
         if let Some(ref smooth) = self.smooth {
             add_result(&smooth.to_string(), "smooth", &mut result)
