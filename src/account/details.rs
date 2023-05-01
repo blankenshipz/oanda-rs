@@ -2,7 +2,7 @@ use chrono::DateTime;
 use chrono::Utc;
 use serde_derive::Deserialize;
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Clone, Debug)]
 pub enum TradeState {
     #[serde(rename = "OPEN")]
     Open,
@@ -12,7 +12,7 @@ pub enum TradeState {
     CloseWhenTradeable,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Clone, Debug)]
 pub enum OrderState {
     #[serde(rename = "PENDING")]
     Pending,
@@ -24,7 +24,7 @@ pub enum OrderState {
     Cancelled,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Clone, Debug)]
 pub struct ClientExtensions {
     /// The Client ID of the Order/Trade
     pub id: String,
@@ -34,7 +34,7 @@ pub struct ClientExtensions {
     pub comment: String,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Clone, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct TradeSummary {
     /// The Trade’s identifier, unique within the Trade’s Account.
@@ -85,7 +85,7 @@ pub struct TradeSummary {
     pub trailing_stop_loss_order_id: Option<String>,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Clone, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct PositionSide {
     /// Number of units in the position (negative value indicates short position,
@@ -110,7 +110,7 @@ pub struct PositionSide {
     pub resettable_pl: String,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Clone, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct Position {
     /// The Position’s Instrument.
@@ -131,7 +131,7 @@ pub struct Position {
     pub short: PositionSide,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Clone, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct Order {
     /// The Order’s identifier, unique within the Order’s Account.
@@ -145,7 +145,7 @@ pub struct Order {
     pub client_extensions: ClientExtensions,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Clone, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct Details {
     /// The Account’s identifier
@@ -242,7 +242,7 @@ pub struct Details {
     pub orders: Vec<Order>,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Clone, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct AccountDetails {
     /// The full details of the requested Account.

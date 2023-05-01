@@ -1,6 +1,6 @@
 use serde_derive::Deserialize;
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Clone, Debug)]
 pub enum InstrumentType {
     /// Currency
     CURRENCY,
@@ -10,7 +10,7 @@ pub enum InstrumentType {
     METAL,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Clone, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct Instrument {
     /// The name of the Instrument
@@ -49,7 +49,7 @@ pub struct Instrument {
     pub margin_rate: f32,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Clone, Debug)]
 pub struct AccountInstruments {
     /// The requested list of instruments.
     pub instruments: Vec<Instrument>,

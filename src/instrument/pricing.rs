@@ -2,7 +2,7 @@ use super::candlestick::Candlestick;
 use super::candlestick_granularity::CandlestickGranularity;
 use serde_derive::Deserialize;
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Clone, Debug)]
 pub struct Pricing {
     /// The instrument whose Prices are represented by the candlesticks.
     pub instrument: String,

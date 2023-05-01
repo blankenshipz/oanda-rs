@@ -4,7 +4,7 @@ use serde_derive::Deserialize;
 
 use super::candlestick_data::CandlestickData;
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Clone, Debug)]
 pub struct Candlestick {
     /// The start time of the candlestick
     pub time: DateTime<Utc>,

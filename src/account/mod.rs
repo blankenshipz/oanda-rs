@@ -3,6 +3,7 @@ pub mod instruments;
 pub mod summary;
 
 use std::error::Error;
+use std::fmt::Debug;
 use crate::client::Client;
 use serde_derive::Deserialize;
 use serde_json;
@@ -18,18 +19,27 @@ fn none() -> Option<&'static Client<'static>> {
     None
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Clone, Debug)]
 pub struct Accounts<'a> {
     pub accounts: Vec<Account<'a>>,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Clone)]
 pub struct Account<'a> {
     pub id: String,
     pub tags: Vec<String>,
     #[serde(default = "none")]
     #[serde(skip_deserializing)]
     pub client: Option<&'a Client<'a>>,
+}
+
+impl <'a> Debug for Account<'a> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("Account")
+            .field("id", &self.id)
+            .field("tags", &self.tags)
+            .finish()
+    }
 }
 
 impl<'a> Account<'a> {

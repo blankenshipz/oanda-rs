@@ -1,6 +1,6 @@
 use serde_derive::Deserialize;
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Clone, Debug)]
 pub struct CandlestickData {
     /// The first (open) price in the time-range represented by the candlestick.
     pub o: f32,
