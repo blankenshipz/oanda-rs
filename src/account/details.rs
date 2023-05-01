@@ -42,31 +42,31 @@ pub struct TradeSummary {
     /// The Trade’s Instrument.
     pub instrument: String,
     /// The execution price of the Trade.
-    pub price: f32,
+    pub price: String,
     /// The date/time when the Trade was opened.
     pub open_time: DateTime<Utc>,
     /// The current state of the Trade.
     pub state: TradeState,
     /// The initial size of the Trade. Negative values indicate a short Trade,
     /// and positive values indicate a long Trade.
-    pub initial_units: f32,
+    pub initial_units: String,
     /// The number of units currently open for the Trade. This value is reduced
     /// to 0.0 as the Trade is closed.
-    pub current_units: f32,
+    pub current_units: String,
     /// The total profit/loss realized on the closed portion of the Trade.
     #[serde(rename = "realizedPL")]
-    pub realized_pl: f32,
+    pub realized_pl: String,
     /// The unrealized profit/loss on the open portion of the Trade.
     #[serde(rename = "unrealizedPL")]
-    pub unrealized_pl: f32,
+    pub unrealized_pl: String,
     /// The average closing price of the Trade. Only present if the Trade has
     /// been closed or reduced at least once.
-    pub average_close_price: Option<f32>,
+    pub average_close_price: Option<String>,
     /// The IDs of the Transactions that have closed portions of this Trade.
     #[serde(rename = "closingTransactionIDs")]
     pub closing_transaction_ids: Vec<String>,
     /// The financing paid/collected for this Trade.
-    pub financing: f32,
+    pub financing: String,
     /// The date/time when the Trade was fully closed. Only provided for Trades
     /// whose state is CLOSED.
     pub close_time: Option<DateTime<Utc>>,
@@ -90,24 +90,24 @@ pub struct TradeSummary {
 pub struct PositionSide {
     /// Number of units in the position (negative value indicates short position,
     /// positive indicates long position).
-    pub units: f32,
+    pub units: String,
     /// Volume-weighted average of the underlying Trade open prices for the
     /// Position.
-    pub average_price: f32,
+    pub average_price: String,
     /// List of the open Trade IDs which contribute to the open Position.
     #[serde(rename = "tradeIDs")]
     pub trade_ids: Vec<String>,
     /// Profit/loss realized by the PositionSide over the lifetime of the
     /// Account.
-    pub pl: f32,
+    pub pl: String,
     /// The unrealized profit/loss of all open Trades that contribute to this
     /// PositionSide.
     #[serde(rename = "unrealizedPL")]
-    pub unrealized_pl: f32,
+    pub unrealized_pl: String,
     /// Profit/loss realized by the PositionSide since the Account’s resettablePL
     /// was last reset by the client.
     #[serde(rename = "resettablePL")]
-    pub resettable_pl: f32,
+    pub resettable_pl: String,
 }
 
 #[derive(Deserialize)]
@@ -116,15 +116,15 @@ pub struct Position {
     /// The Position’s Instrument.
     pub instrument: String,
     /// Profit/loss realized by the Position over the lifetime of the Account.
-    pub pl: f32,
+    pub pl: String,
     /// The unrealized profit/loss of all open Trades that contribute to this
     /// Position.
     #[serde(rename = "unrealizedPL")]
-    pub unrealized_pl: f32,
+    pub unrealized_pl: String,
     /// Profit/loss realized by the Position since the Account’s resettablePL was
     /// last reset by the client.
     #[serde(rename = "resettablePL")]
-    pub resettable_pl: f32,
+    pub resettable_pl: String,
     /// The details of the long side of the Position.
     pub long: PositionSide,
     /// The details of the short side of the Position.
@@ -157,7 +157,7 @@ pub struct Details {
     pub currency: String,
     /// The current balance of the Account. Represented in the Account’s home
     /// currency.
-    pub balance: f32,
+    pub balance: String,
     /// ID of the user that created the Account.
     #[serde(rename = "createdByUserID")]
     pub created_by_user_id: i32,
@@ -165,11 +165,11 @@ pub struct Details {
     pub created_time: DateTime<Utc>,
     /// The total profit/loss realized over the lifetime of the Account.
     /// Represented in the Account’s home currency.
-    pub pl: f32,
+    pub pl: String,
     /// The total realized profit/loss for the Account since it was last reset by
     /// the client. Represented in the Account’s home currency.
     #[serde(rename = "resettablePL")]
-    pub resettable_pl: f32,
+    pub resettable_pl: String,
     /// The date/time that the Account’s resettablePL was last reset.
     #[serde(rename = "resettablePLTime")]
     pub resettabled_pl_time: Option<DateTime<Utc>>,
@@ -177,7 +177,7 @@ pub struct Details {
     /// margin rate of the Account is the lesser of this value and the OANDA
     /// margin rate for the Account’s division. This value is only provided if a
     /// margin rate override exists for the Account.
-    pub margin_rate: Option<f32>,
+    pub margin_rate: Option<String>,
     /// The date/time when the Account entered a margin call state. Only provided
     /// if the Account is in a margin call.
     pub margin_call_enter_time: Option<DateTime<Utc>>,
@@ -196,41 +196,41 @@ pub struct Details {
     /// The total unrealized profit/loss for all Trades currently open in the
     /// Account. Represented in the Account’s home currency.
     #[serde(rename = "unrealizedPL")]
-    pub unrealized_pl: f32,
+    pub unrealized_pl: String,
     /// The net asset value of the Account. Equal to Account balance +
     /// unrealizedPL. Represented in the Account’s home currency.
     #[serde(rename = "NAV")]
-    pub nav: f32,
+    pub nav: String,
     /// Margin currently used for the Account. Represented in the Account’s home
     /// currency.
-    pub margin_used: f32,
+    pub margin_used: String,
     /// Margin available for Account. Represented in the Account’s home currency.
-    pub margin_available: f32,
+    pub margin_available: String,
     /// The value of the Account’s open positions represented in the Account’s
     /// home currency.
-    pub position_value: f32,
+    pub position_value: String,
     /// The Account’s margin closeout unrealized PL.
     #[serde(rename = "marginCloseoutUnrealizedPL")]
-    pub margin_closeout_unrealized_pl: f32,
+    pub margin_closeout_unrealized_pl: String,
     /// The Account’s margin closeout NAV.
     #[serde(rename = "marginCloseoutNAV")]
-    pub margin_closeout_nav: f32,
+    pub margin_closeout_nav: String,
     /// The Account’s margin closeout margin used.
-    pub margin_closeout_margin_used: f32,
+    pub margin_closeout_margin_used: String,
     /// The Account’s margin closeout percentage. When this value is 1.0 or above
     /// the Account is in a margin closeout situation.
-    pub margin_closeout_percent: f32,
+    pub margin_closeout_percent: String,
     /// The value of the Account’s open positions as used for margin closeout
     /// calculations represented in the Account’s home currency.
-    pub margin_closeout_position_value: f32,
+    pub margin_closeout_position_value: String,
     /// The current WithdrawalLimit for the account which will be zero or a
     /// positive value indicating how much can be withdrawn from the account.
-    pub withdrawal_limit: f32,
+    pub withdrawal_limit: String,
     /// The Account’s margin call margin used.
-    pub margin_call_margin_used: f32,
+    pub margin_call_margin_used: String,
     /// The Account’s margin call percentage. When this value is 1.0 or above the
     /// Account is in a margin call situation.
-    pub margin_call_percent: f32,
+    pub margin_call_percent: String,
     /// The ID of the last Transaction created for the Account.
     #[serde(rename = "lastTransactionID")]
     pub last_transaction_id: String,

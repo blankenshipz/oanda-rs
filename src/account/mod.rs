@@ -35,7 +35,12 @@ pub struct Account<'a> {
 impl<'a> Account<'a> {
     pub async fn details(&self) -> Result<Details, Box<dyn Error>> {
         let input = self.client().get(format!("accounts/{}", self.id).as_str()).await?;
-        let result: AccountDetails = serde_json::from_str(&input)?;
+        let result: AccountDetails = serde_json::from_str(&input)
+            .map_err(|e| {
+                eprintln!("Error deserializing account details: {}", e);
+                eprintln!("Input: {}", input);
+                e
+            })?;
 
         Ok(result.account)
     }
