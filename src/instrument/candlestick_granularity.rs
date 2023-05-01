@@ -1,3 +1,5 @@
+use serde_derive::Deserialize;
+
 #[derive(Deserialize)]
 pub enum CandlestickGranularity {
     /// 5 second candlesticks, minute alignment

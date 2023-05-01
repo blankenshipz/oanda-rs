@@ -1,13 +1,13 @@
-use chrono::datetime::DateTime;
-use chrono::UTC;
+use chrono::DateTime;
+use chrono::Utc;
+use serde_derive::Deserialize;
 
-use super::candlestick_granularity::CandlestickGranularity;
 use super::candlestick_data::CandlestickData;
 
 #[derive(Deserialize)]
 pub struct Candlestick {
     /// The start time of the candlestick
-    pub time: DateTime<UTC>,
+    pub time: DateTime<Utc>,
     /// The candlestick data based on bids. Only provided if bid-based candles
     /// were requested.
     pub bid: Option<CandlestickData>,
@@ -22,5 +22,5 @@ pub struct Candlestick {
     pub volume: i32,
     /// A flag indicating if the candlestick is complete. A complete candlestick
     /// is one whose ending time is not in the future.
-    pub complete: bool
+    pub complete: bool,
 }

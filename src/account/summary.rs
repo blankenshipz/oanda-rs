@@ -1,5 +1,6 @@
-use chrono::datetime::DateTime;
-use chrono::UTC;
+use chrono::DateTime;
+use chrono::Utc;
+use serde_derive::Deserialize;
 
 #[derive(Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -18,7 +19,7 @@ pub struct Summary {
     #[serde(rename = "createdByUserID")]
     pub created_by_user_id: i32,
     /// The date/time when the Account was created.
-    pub created_time: DateTime<UTC>,
+    pub created_time: DateTime<Utc>,
     /// The total profit/loss realized over the lifetime of the Account.
     /// Represented in the Account’s home currency.
     pub pl: f32,
@@ -28,7 +29,7 @@ pub struct Summary {
     pub resettable_pl: f32,
     /// The date/time that the Account’s resettablePL was last reset.
     #[serde(rename = "resettabledPLTimelast")]
-    pub resettabled_pl_time: Option<DateTime<UTC>>,
+    pub resettabled_pl_time: Option<DateTime<Utc>>,
     /// Client-provided margin rate override for the Account. The effective
     /// margin rate of the Account is the lesser of this value and the OANDA
     /// margin rate for the Account’s division. This value is only provided if a
@@ -36,11 +37,11 @@ pub struct Summary {
     pub margin_rate: Option<f32>,
     /// The date/time when the Account entered a margin call state. Only provided
     /// if the Account is in a margin call.
-    pub margin_call_enter_time: Option<DateTime<UTC>>,
+    pub margin_call_enter_time: Option<DateTime<Utc>>,
     /// The number of times that the Account’s current margin call was extended.
     pub margin_call_extension_count: Option<i32>,
     /// The date/time of the Account’s last margin call extension.
-    pub last_margin_call_extension_time: Option<DateTime<UTC>>,
+    pub last_margin_call_extension_time: Option<DateTime<Utc>>,
     /// The number of Trades currently open in the Account.
     pub open_trade_count: i32,
     /// The number of Positions currently open in the Account.
@@ -89,7 +90,7 @@ pub struct Summary {
     pub margin_call_percent: f32,
     /// The ID of the last Transaction created for the Account.
     #[serde(rename = "lastTransactionID")]
-    pub last_transaction_id: String
+    pub last_transaction_id: String,
 }
 
 #[derive(Deserialize)]
@@ -98,5 +99,5 @@ pub struct AccountSummary {
     pub account: Summary,
     /// The ID of the most recent Transaction created for the Account.
     #[serde(rename = "lastTransactionID")]
-    pub last_transaction_id: String
+    pub last_transaction_id: String,
 }

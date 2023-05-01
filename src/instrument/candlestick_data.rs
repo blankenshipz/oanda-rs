@@ -1,3 +1,5 @@
+use serde_derive::Deserialize;
+
 #[derive(Deserialize)]
 pub struct CandlestickData {
     /// The first (open) price in the time-range represented by the candlestick.
@@ -8,6 +10,5 @@ pub struct CandlestickData {
     pub l: f32,
     /// The last (closing) price in the time-range represented by the
     /// candlestick.
-    pub c: f32
+    pub c: f32,
 }
-

@@ -1,111 +1,97 @@
 extern crate ratelimit;
 
-use std::io::Read;
-use std::sync::mpsc;
-use std::thread;
+use std::error::Error;
 use std::time::Duration;
-use std::sync::mpsc::SyncSender;
 
-use chrono::datetime::DateTime;
-use chrono::UTC;
+use chrono::DateTime;
+use chrono::Utc;
 
-use hyper::Client as WebClient;
-use hyper::header::Headers;
-use hyper::net::HttpsConnector;
-use hyper_native_tls::NativeTlsClient;
+use hyper::client::HttpConnector;
+use hyper::{client::Builder as WebClientBuilder, Client as WebClient, Request};
+use hyper_tls::HttpsConnector;
+use ratelimit::Ratelimiter;
 
 use serde_json;
 
-use account::*;
-use account::details::*;
-use account::summary::*;
-
-use instrument::pricing_query::PricingQuery;
-
-header! { (Authorization, "Authorization") => [String] }
-header! { (AcceptDatetimeFormat, "AcceptDatetimeFormat") => [String] }
-header! { (Connection, "Connection") => [String] }
+use crate::account::{Account, Accounts};
+use crate::instrument::pricing_query::PricingQuery;
 
 pub struct Client<'a> {
     url: &'a str,
     api_key: &'a str,
-    web_client: WebClient,
-    sender: SyncSender<()>
+    client: WebClient<HttpsConnector<HttpConnector>>,
+    rate_limiter: Ratelimiter,
 }
 
 /// The Client facilitates all requests to the Oanda API
 impl<'a> Client<'a> {
     pub fn new(url: &'a str, api_key: &'a str) -> Client<'a> {
-        let ssl = NativeTlsClient::new().unwrap();
-        let connector = HttpsConnector::new(ssl);
-        let web_client = WebClient::with_connector(connector);
+        let mut http = HttpConnector::new();
+        http.set_nodelay(true);
+        http.set_reuse_address(true);
+        http.set_keepalive(Some(Duration::from_secs(120)));
+        http.enforce_http(false);
 
-        /// Client is allowed to have no more than 120 requests per second on average,
-        /// with bursts of no more than 60 requests. Excess requests will be
-        /// rejected. This restriction is applied for each access token,
-        /// not for each individual connection.
-        let mut ratelimit = ratelimit::Ratelimit::configure()
-            .capacity(60) // number of tokens the bucket will hold
-            .quantum(1)   // add one token per interval
-            .interval(Duration::from_millis(9)) // TODO: allows for 111 per second 8.3 would be 120 (Quantum per 9 milliseconds)
-            .build();
+        let connector = HttpsConnector::new_with_connector(http);
+        let client = WebClientBuilder::default().build(connector);
+
+        // Client is allowed to have no more than 120 requests per second on average,
+        // with bursts of no more than 60 requests. Excess requests will be
+        // rejected. This restriction is applied for each access token,
+        // not for each individual connection.
+        let capacity = 60; // number of tokens the bucket will hold
+        let quantum = 1; // number of tokens to add per interval
+        let interval = Duration::from_millis(9); // interval between token adds
+        let rate_limiter = Ratelimiter::new(capacity, quantum, interval.as_millis() as u64);
 
         let client = Client {
-            url: url,
-            api_key: api_key,
-            web_client: web_client,
-            sender: ratelimit.clone_sender()
+            url,
+            api_key,
+            client,
+            rate_limiter,
         };
-
-        thread::spawn(move || {
-            loop {
-                ratelimit.run();
-            }
-        });
 
         client
     }
 
     /// Get Account list for current auth token
-    pub fn accounts(&self) -> Vec<Account> {
-        let input = self.get("accounts");
+    pub async fn accounts(&self) -> Result<Vec<Account>, Box<dyn Error>> {
+        let input = self.get("accounts").await?;
         let mut result: Accounts = serde_json::from_str(&input).unwrap();
 
         for x in result.accounts.iter_mut() {
             x.client = Some(&self);
         }
 
-        result.accounts
+        Ok(result.accounts)
     }
 
-    pub fn pricing_for(&self, instrument: String, from: DateTime<UTC>) -> PricingQuery {
+    pub fn pricing_for(&self, instrument: String, from: DateTime<Utc>) -> PricingQuery {
         PricingQuery::new(&self, instrument, from)
     }
 
-    pub fn get(&self, params: &str) -> String {
-        self.sender.send(());
-
-        let mut res = String::new();
-
-        self.web_client
-            .get(&format!("{}/{}", self.url, params))
-            .headers(self.headers())
-            .send()
-            .unwrap()
-            .read_to_string(&mut res)
-            .unwrap();
-
-        res
+    pub async fn wait_for_rate_limiter(&self) {
+        while self.rate_limiter.try_wait().is_err() {
+            tokio::time::sleep(Duration::from_millis(1)).await;
+        }
     }
 
-    fn headers(&self) -> Headers {
-        let mut headers = Headers::new();
+    pub async fn get(&self, params: &str) -> Result<String, Box<dyn std::error::Error>> {
+        self.wait_for_rate_limiter().await;
 
-        headers.set(Authorization(format!("Bearer {}", self.api_key)));
-        headers.set(AcceptDatetimeFormat("RFC3339".to_string()));
-        headers.set(Connection("Keep-Alive".to_string()));
+        let web_client = &self.client;
 
-        headers
+        let url = format!("{}/{}", self.url, params);
+        let request = Request::get(url)
+            .header("Content-Type", "application/json")
+            .header("Accept-Datetime-Format", "RFC3339")
+            .header("Authorization", format!("Bearer {}", self.api_key))
+            .body(hyper::Body::from(""))?;
+
+        let res = web_client.request(request).await?;
+        let res = hyper::body::to_bytes(res.into_body()).await?;
+        let res = String::from_utf8(res.to_vec())?;
+        Ok(res)
     }
 }
 

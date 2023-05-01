@@ -1,11 +1,12 @@
-use chrono::datetime::DateTime;
-use chrono::UTC;
+use chrono::DateTime;
+use chrono::Utc;
+use serde_derive::Deserialize;
 
 #[derive(Deserialize)]
 pub enum TradeState {
     OPEN,
     CLOSED,
-    CLOSE_WHEN_TRADEABLE
+    CLOSE_WHEN_TRADEABLE,
 }
 
 #[derive(Deserialize)]
@@ -13,7 +14,7 @@ pub enum OrderState {
     PENDING,
     FILLED,
     TRIGGERED,
-    CANCELLED
+    CANCELLED,
 }
 
 #[derive(Deserialize)]
@@ -23,7 +24,7 @@ pub struct ClientExtensions {
     /// A tag associated with the Order/Trade
     pub tag: String,
     /// A comment associated with the Order/Trade
-    pub comment: String
+    pub comment: String,
 }
 
 #[derive(Deserialize)]
@@ -36,7 +37,7 @@ pub struct TradeSummary {
     /// The execution price of the Trade.
     pub price: f32,
     /// The date/time when the Trade was opened.
-    pub open_time: DateTime<UTC>,
+    pub open_time: DateTime<Utc>,
     /// The current state of the Trade.
     pub state: TradeState,
     /// The initial size of the Trade. Negative values indicate a short Trade,
@@ -61,7 +62,7 @@ pub struct TradeSummary {
     pub financing: f32,
     /// The date/time when the Trade was fully closed. Only provided for Trades
     /// whose state is CLOSED.
-    pub close_time: Option<DateTime<UTC>>,
+    pub close_time: Option<DateTime<Utc>>,
     /// The client extensions of the Trade.
     pub client_extensions: ClientExtensions,
     /// ID of the Trade’s Take Profit Order, only provided if such an Order
@@ -74,7 +75,7 @@ pub struct TradeSummary {
     /// ID of the Trade’s Trailing Stop Loss Order, only provided if such an
     /// Order exists.
     #[serde(rename = "trailingStopLossOrderID")]
-    pub trailing_stop_loss_order_id: Option<String>
+    pub trailing_stop_loss_order_id: Option<String>,
 }
 
 #[derive(Deserialize)]
@@ -99,7 +100,7 @@ pub struct PositionSide {
     /// Profit/loss realized by the PositionSide since the Account’s resettablePL
     /// was last reset by the client.
     #[serde(rename = "resettablePL")]
-    pub resettable_pl: f32
+    pub resettable_pl: f32,
 }
 
 #[derive(Deserialize)]
@@ -120,7 +121,7 @@ pub struct Position {
     /// The details of the long side of the Position.
     pub long: PositionSide,
     /// The details of the short side of the Position.
-    pub short: PositionSide
+    pub short: PositionSide,
 }
 
 #[derive(Deserialize)]
@@ -129,12 +130,12 @@ pub struct Order {
     /// The Order’s identifier, unique within the Order’s Account.
     pub id: String,
     /// The time when the Order was created.
-    pub create_time: DateTime<UTC>,
+    pub create_time: DateTime<Utc>,
     /// The current state of the Order.
     pub state: OrderState,
     /// The client extensions of the Order. Do not set, modify, or delete
     /// clientExtensions if your account is associated with MT4.
-    pub client_extensions: ClientExtensions
+    pub client_extensions: ClientExtensions,
 }
 
 #[derive(Deserialize)]
@@ -154,7 +155,7 @@ pub struct Details {
     #[serde(rename = "createdByUserID")]
     pub created_by_user_id: i32,
     /// The date/time when the Account was created.
-    pub created_time: DateTime<UTC>,
+    pub created_time: DateTime<Utc>,
     /// The total profit/loss realized over the lifetime of the Account.
     /// Represented in the Account’s home currency.
     pub pl: f32,
@@ -164,7 +165,7 @@ pub struct Details {
     pub resettable_pl: f32,
     /// The date/time that the Account’s resettablePL was last reset.
     #[serde(rename = "resettablePLTime")]
-    pub resettabled_pl_time: Option<DateTime<UTC>>,
+    pub resettabled_pl_time: Option<DateTime<Utc>>,
     /// Client-provided margin rate override for the Account. The effective
     /// margin rate of the Account is the lesser of this value and the OANDA
     /// margin rate for the Account’s division. This value is only provided if a
@@ -172,11 +173,11 @@ pub struct Details {
     pub margin_rate: Option<f32>,
     /// The date/time when the Account entered a margin call state. Only provided
     /// if the Account is in a margin call.
-    pub margin_call_enter_time: Option<DateTime<UTC>>,
+    pub margin_call_enter_time: Option<DateTime<Utc>>,
     /// The number of times that the Account’s current margin call was extended.
     pub margin_call_extension_count: Option<i32>,
     /// The date/time of the Account’s last margin call extension.
-    pub last_margin_call_extension_time: Option<DateTime<UTC>>,
+    pub last_margin_call_extension_time: Option<DateTime<Utc>>,
     /// The number of Trades currently open in the Account.
     pub open_trade_count: i32,
     /// The number of Positions currently open in the Account.
@@ -231,7 +232,7 @@ pub struct Details {
     /// The details all Account Positions.
     pub positions: Vec<Position>,
     /// The details of the Orders currently pending in the Account.
-    pub orders: Vec<Order>
+    pub orders: Vec<Order>,
 }
 
 #[derive(Deserialize)]
@@ -241,5 +242,5 @@ pub struct AccountDetails {
     pub account: Details,
     /// The ID of the most recent Transaction created for the Account.
     #[serde(rename = "lastTransactionID")]
-    pub last_transaction_id: String
+    pub last_transaction_id: String,
 }

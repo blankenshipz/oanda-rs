@@ -1,3 +1,5 @@
+use serde_derive::Deserialize;
+
 #[derive(Deserialize)]
 pub enum InstrumentType {
     /// Currency
@@ -5,7 +7,7 @@ pub enum InstrumentType {
     ///Contract For Difference
     CFD,
     /// METAL
-    METAL
+    METAL,
 }
 
 #[derive(Deserialize)]
@@ -44,7 +46,7 @@ pub struct Instrument {
     /// Specified in units.
     pub maximum_order_units: f32,
     /// The margin rate for this instrument.
-    pub margin_rate: f32
+    pub margin_rate: f32,
 }
 
 #[derive(Deserialize)]
@@ -53,5 +55,5 @@ pub struct AccountInstruments {
     pub instruments: Vec<Instrument>,
     /// The ID of the most recent Transaction created for the Account.
     #[serde(rename = "lastTransactionID")]
-    pub last_transaction_id: String
+    pub last_transaction_id: String,
 }

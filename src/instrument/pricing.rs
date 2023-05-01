@@ -1,5 +1,6 @@
-use super::candlestick_granularity::CandlestickGranularity;
 use super::candlestick::Candlestick;
+use super::candlestick_granularity::CandlestickGranularity;
+use serde_derive::Deserialize;
 
 #[derive(Deserialize)]
 pub struct Pricing {
@@ -8,5 +9,5 @@ pub struct Pricing {
     /// The granularity of the candlesticks provided.
     pub granularity: CandlestickGranularity,
     /// The list of candlesticks that satisfy the request.
-    pub candles: Vec<Candlestick>
+    pub candles: Vec<Candlestick>,
 }
