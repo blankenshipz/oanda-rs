@@ -99,14 +99,14 @@ mod tests {
     use std::env;
 
     /// # TODO: Move integration tests to `tests/`
-    #[test]
-    fn it_can_read_accounts() {
+    #[tokio::test]
+    async fn it_can_read_accounts() {
         let url = env::var("OANDA_API_URL").unwrap();
         let key = env::var("OANDA_API_KEY").unwrap();
         let account_id = env::var("OANDA_TEST_ACCOUNT_ID").unwrap();
 
         let client = Client::new(&url, &key);
-        let info = client.accounts();
+        let info = client.accounts().await.unwrap();
 
         assert_eq!(info.iter().any(|ref x| x.id == account_id), true)
     }

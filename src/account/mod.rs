@@ -71,47 +71,47 @@ mod tests {
     use std::env;
 
     /// # TODO: Move integration tests to `tests/`
-    #[test]
-    fn it_can_read_account_details() {
+    #[tokio::test]
+    async fn it_can_read_account_details() {
         let url = env::var("OANDA_API_URL").unwrap();
         let key = env::var("OANDA_API_KEY").unwrap();
         let account_id = env::var("OANDA_TEST_ACCOUNT_ID").unwrap();
 
         let client = Client::new(&url, &key);
-        let accounts = client.accounts();
+        let accounts = client.accounts().await.unwrap();
 
         let account = accounts.first().unwrap().clone();
-        let details = account.details();
+        let details = account.details().await.unwrap();
 
         assert_eq!(details.alias.unwrap(), "Testv20")
     }
 
-    #[test]
-    fn it_can_read_account_summary() {
+    #[tokio::test]
+    async fn it_can_read_account_summary() {
         let url = env::var("OANDA_API_URL").unwrap();
         let key = env::var("OANDA_API_KEY").unwrap();
         let account_id = env::var("OANDA_TEST_ACCOUNT_ID").unwrap();
 
         let client = Client::new(&url, &key);
-        let accounts = client.accounts();
+        let accounts = client.accounts().await.unwrap();
 
         let account = accounts.first().unwrap().clone();
-        let summary = account.summary();
+        let summary = account.summary().await.unwrap();
 
         assert_eq!(summary.alias.unwrap(), "Testv20")
     }
 
-    #[test]
-    fn it_can_read_account_instruments() {
+    #[tokio::test]
+    async fn it_can_read_account_instruments() {
         let url = env::var("OANDA_API_URL").unwrap();
         let key = env::var("OANDA_API_KEY").unwrap();
         let account_id = env::var("OANDA_TEST_ACCOUNT_ID").unwrap();
 
         let client = Client::new(&url, &key);
-        let accounts = client.accounts();
+        let accounts = client.accounts().await.unwrap();
 
         let account = accounts.first().unwrap().clone();
-        let instruments = account.instruments();
+        let instruments = account.instruments().await.unwrap();
         /// the result here is a list of all USD_* tradable currencies because
         /// the test account is USD, just make sure we find one we "expect"
         assert_eq!(instruments.into_iter().any(|x| x.name == "USD_DKK"), true)

@@ -186,13 +186,12 @@ impl<'a> PricingQuery<'a> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use chrono::offset::LocalResult;
     use chrono::prelude::*;
     use std::env;
 
-    #[test]
-    fn it_can_perform_a_query() {
-        let utc: DateTime<Utc> = UTC.ymd(2017, 6, 21).and_hms(12, 0, 0);
+    #[tokio::test]
+    async fn it_can_perform_a_query() {
+        let utc = Utc.with_ymd_and_hms(2017, 6, 21, 12, 0, 0).unwrap();
         let url = env::var("OANDA_API_URL").unwrap();
         let key = env::var("OANDA_API_KEY").unwrap();
         let account_id = env::var("OANDA_TEST_ACCOUNT_ID").unwrap();
@@ -205,6 +204,6 @@ mod tests {
             format!("EUR_USD/candles?from={}&price=M", utc.to_rfc3339())
         );
 
-        assert_eq!(query.execute().instrument, "EUR_USD")
+        assert_eq!(query.execute().await.unwrap().instrument, "EUR_USD")
     }
 }

@@ -14,7 +14,7 @@ edition = "2021"
 chrono = { version = "0.4.24", features = ["serde"] }
 hyper = { version = "0.14.25", features = ["client", "http1", "http2", "tcp"] }
 hyper-tls = { version = "0.5.0", features = [] }
-tokio = { version = "1", use-default-features = false }
+tokio = { version = "1", use-default-features = false, features = ["macros"] }
 serde = "1"
 serde_derive = "1"
 serde_json = "1"
