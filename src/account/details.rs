@@ -4,17 +4,24 @@ use serde_derive::Deserialize;
 
 #[derive(Deserialize)]
 pub enum TradeState {
-    OPEN,
-    CLOSED,
-    CLOSE_WHEN_TRADEABLE,
+    #[serde(rename = "OPEN")]
+    Open,
+    #[serde(rename = "CLOSED")]
+    Closed,
+    #[serde(rename = "CLOSE_WHEN_TRADEABLE")]
+    CloseWhenTradeable,
 }
 
 #[derive(Deserialize)]
 pub enum OrderState {
-    PENDING,
-    FILLED,
-    TRIGGERED,
-    CANCELLED,
+    #[serde(rename = "PENDING")]
+    Pending,
+    #[serde(rename = "FILLED")]
+    Filled,
+    #[serde(rename = "TRIGGERED")]
+    Triggered,
+    #[serde(rename = "CANCELLED")]
+    Cancelled,
 }
 
 #[derive(Deserialize)]

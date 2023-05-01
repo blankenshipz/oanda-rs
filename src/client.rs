@@ -44,14 +44,12 @@ impl<'a> Client<'a> {
         let interval = Duration::from_millis(9); // interval between token adds
         let rate_limiter = Ratelimiter::new(capacity, quantum, interval.as_millis() as u64);
 
-        let client = Client {
+        Client {
             url,
             api_key,
             client,
             rate_limiter,
-        };
-
-        client
+        }
     }
 
     /// Get Account list for current auth token
@@ -60,14 +58,14 @@ impl<'a> Client<'a> {
         let mut result: Accounts = serde_json::from_str(&input).unwrap();
 
         for x in result.accounts.iter_mut() {
-            x.client = Some(&self);
+            x.client = Some(self);
         }
 
         Ok(result.accounts)
     }
 
     pub fn pricing_for(&self, instrument: String, from: DateTime<Utc>) -> PricingQuery {
-        PricingQuery::new(&self, instrument, from)
+        PricingQuery::new(self, instrument, from)
     }
 
     pub async fn wait_for_rate_limiter(&self) {

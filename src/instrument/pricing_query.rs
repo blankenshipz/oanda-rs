@@ -104,18 +104,18 @@ impl<'a> fmt::Display for PricingQuery<'a> {
 impl<'a> PricingQuery<'a> {
     pub fn new(client: &'a Client, instrument: String, from: DateTime<Utc>) -> PricingQuery<'a> {
         PricingQuery {
-            instrument: instrument,
+            instrument,
             price: None,
             granularity: None,
             count: None,
-            from: from,
+            from,
             to: None,
             smooth: None,
             include_first: None,
             daily_alignment: None,
             alignment_timezone: None,
             weekly_alignment: None,
-            client: client,
+            client,
         }
     }
     pub fn with_price(&mut self, price: String) -> &mut PricingQuery<'a> {
@@ -166,7 +166,7 @@ impl<'a> PricingQuery<'a> {
     pub async fn execute(&self) -> Result<Pricing, Box<dyn Error>> {
         let input = self
             .client
-            .get(&format!("instruments/{}", self.to_string()))
+            .get(&format!("instruments/{}", self))
             .await?;
         let result: Pricing = serde_json::from_str(&input)?;
 
