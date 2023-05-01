@@ -93,10 +93,10 @@ pub struct PositionSide {
     pub units: String,
     /// Volume-weighted average of the underlying Trade open prices for the
     /// Position.
-    pub average_price: String,
+    pub average_price: Option<String>,
     /// List of the open Trade IDs which contribute to the open Position.
     #[serde(rename = "tradeIDs")]
-    pub trade_ids: Vec<String>,
+    pub trade_ids: Option<Vec<String>>,
     /// Profit/loss realized by the PositionSide over the lifetime of the
     /// Account.
     pub pl: String,
@@ -172,7 +172,7 @@ pub struct Details {
     pub resettable_pl: String,
     /// The date/time that the Account’s resettablePL was last reset.
     #[serde(rename = "resettablePLTime")]
-    pub resettabled_pl_time: Option<DateTime<Utc>>,
+    pub resettabled_pl_time: String,
     /// Client-provided margin rate override for the Account. The effective
     /// margin rate of the Account is the lesser of this value and the OANDA
     /// margin rate for the Account’s division. This value is only provided if a
