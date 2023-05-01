@@ -5,7 +5,7 @@ pub mod summary;
 use std::error::Error;
 use std::fmt::Debug;
 use crate::client::Client;
-use serde_derive::Deserialize;
+use serde_derive::{Deserialize, Serialize};
 use serde_json;
 
 use self::details::AccountDetails;
@@ -19,17 +19,18 @@ fn none() -> Option<&'static Client<'static>> {
     None
 }
 
-#[derive(Deserialize, Clone, Debug)]
+#[derive(Deserialize, Serialize, Clone, Debug)]
 pub struct Accounts<'a> {
     pub accounts: Vec<Account<'a>>,
 }
 
-#[derive(Deserialize, Clone)]
+#[derive(Deserialize, Serialize, Clone)]
 pub struct Account<'a> {
     pub id: String,
     pub tags: Vec<String>,
     #[serde(default = "none")]
     #[serde(skip_deserializing)]
+    #[serde(skip_serializing)]
     pub client: Option<&'a Client<'a>>,
 }
 

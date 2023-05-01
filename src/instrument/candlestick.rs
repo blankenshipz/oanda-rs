@@ -1,10 +1,10 @@
 use chrono::DateTime;
 use chrono::Utc;
-use serde_derive::Deserialize;
+use serde_derive::{Deserialize, Serialize};
 
 use super::candlestick_data::CandlestickData;
 
-#[derive(Deserialize, Clone, Debug)]
+#[derive(Deserialize, Serialize, Clone, Debug)]
 pub struct Candlestick {
     /// The start time of the candlestick
     pub time: DateTime<Utc>,

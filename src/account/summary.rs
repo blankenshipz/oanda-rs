@@ -1,8 +1,8 @@
 use chrono::DateTime;
 use chrono::Utc;
-use serde_derive::Deserialize;
+use serde_derive::{Deserialize, Serialize};
 
-#[derive(Deserialize, Clone, Debug)]
+#[derive(Deserialize, Serialize, Clone, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct Summary {
     /// The Account’s identifier
@@ -93,7 +93,7 @@ pub struct Summary {
     pub last_transaction_id: String,
 }
 
-#[derive(Deserialize, Clone, Debug)]
+#[derive(Deserialize, Serialize, Clone, Debug)]
 pub struct AccountSummary {
     /// The full details of the requested Account.
     pub account: Summary,
