@@ -1,14 +1,16 @@
-#[derive(Deserialize)]
+use serde_derive::{Deserialize, Serialize};
+
+#[derive(Deserialize, Serialize, Clone, Debug)]
 pub enum InstrumentType {
     /// Currency
     CURRENCY,
     ///Contract For Difference
     CFD,
     /// METAL
-    METAL
+    METAL,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Serialize, Clone, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct Instrument {
     /// The name of the Instrument
@@ -44,14 +46,14 @@ pub struct Instrument {
     /// Specified in units.
     pub maximum_order_units: f32,
     /// The margin rate for this instrument.
-    pub margin_rate: f32
+    pub margin_rate: f32,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Serialize, Clone, Debug)]
 pub struct AccountInstruments {
     /// The requested list of instruments.
     pub instruments: Vec<Instrument>,
     /// The ID of the most recent Transaction created for the Account.
     #[serde(rename = "lastTransactionID")]
-    pub last_transaction_id: String
+    pub last_transaction_id: String,
 }

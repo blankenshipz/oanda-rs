@@ -19,6 +19,12 @@ See the [examples](examples/) and the [documentation](https://docs.rs/oandars/0.
 1. Create an `Oanda` test account and name it `Testv20`
 1. Copy the `.secrets.sample` to `.secrets` and update the variables based on your new test account
 
+### Running example
+
+```sh
+cargo run --example todays_candlesticks --feature example
+```
+
 ### Running Tests
 
 The test suite can be run with `docker-compose`:
